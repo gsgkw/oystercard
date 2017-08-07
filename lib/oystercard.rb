@@ -2,20 +2,20 @@
 class Oystercard
   attr_reader :balance, :entry_station
 
-  MAX_VALUE = 90
-  MIN_VALUE = 1
+  MAXV = 90
+  MINV = 1
 
   def initialize(balance = 0)
     @balance = balance
   end
 
   def top_up(value)
-    raise 'New balance exceeds #{MAX_VALUE}' if balance + value > MAX_VALUE
+    raise 'New balance exceeds #{MAXV}' if balance + value > MAXV
     @balance += value
   end
 
   def touch_in(entry_station)
-    raise 'New balance lower than #{MIN_VALUE}' if balance < MIN_VALUE
+    raise 'New balance lower than #{MINV}' if balance < MINV
     @in_use = true
     @entry_station = entry_station
   end
@@ -23,6 +23,7 @@ class Oystercard
   def touch_out(fare)
     @in_use = false
     deduct(fare)
+    @entry_station = nil
   end
 
   def in_journey?
