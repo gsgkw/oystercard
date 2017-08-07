@@ -10,4 +10,11 @@ describe Oystercard do
     subject.top_up(5)
     expect(subject.balance).to eq 5
   end
+
+  it 'fails if new balance greater than limit' do
+    subject.top_up(80)
+    expect { subject.top_up(20) }.to raise_error 'New balance exceeds #{MAX_VALUE}'
+  end
+
+
 end
