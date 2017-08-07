@@ -22,7 +22,7 @@ describe Oystercard do
 
   it 'deducts fare from balance' do
     subject.top_up(20)
-    subject.deduct(20)
+    subject.send(:deduct, 20)
     expect(subject.balance).to eq 0
   end
 
@@ -35,10 +35,15 @@ describe Oystercard do
   it 'can be touched out' do
     subject.top_up(20)
     subject.touch_in
-    subject.touch_out
+    subject.touch_out(4)
     expect(subject.in_journey?).to eq false
   end
 
+  it 'can deduct fare on touch out' do
+    subject.top_up(10)
+    subject.touch_in
+    expect { subject.touch_out(4) }.to change { subject.balance }.by(-4)
+  end
 
 
 end
