@@ -1,6 +1,6 @@
 # creates an Oyster class
 class Oystercard
-  attr_reader :balance
+  attr_reader :balance, :entry_station
 
   MAX_VALUE = 90
   MIN_VALUE = 1
@@ -14,9 +14,10 @@ class Oystercard
     @balance += value
   end
 
-  def touch_in
+  def touch_in(entry_station)
     raise 'New balance lower than #{MIN_VALUE}' if balance < MIN_VALUE
     @in_use = true
+    @entry_station = entry_station
   end
 
   def touch_out(fare)
