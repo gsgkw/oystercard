@@ -1,34 +1,45 @@
 # creates an Oyster class
 class Oystercard
-  attr_reader :balance, :entry_station
+  attr_reader :balance, :journeys
 
-  MAXV = 90
-  MINV = 1
+  $MAXV = 90
 
   def initialize(balance = 0)
     @balance = balance
+    @journeys = []
   end
 
   def top_up(value)
-    raise 'New balance exceeds #{MAXV}' if balance + value > MAXV
+    raise 'New balance exceeds #{MAXV}' if balance + value > $MAXV
     @balance += value
   end
 
   def touch_in(entry_station)
-    raise 'New balance lower than #{MINV}' if balance < MINV
-    @in_use = true
-    @entry_station = entry_station
+    raise 'Bal lower than #{MINV}' if balance < $MINV
+    deduct(current_journey.fare) if in_journey?
+    @journeys << Journey.new(entry_station)
   end
 
-  def touch_out(fare)
-    @in_use = false
-    deduct(fare)
-    @entry_station = nil
+  def touch_out(station)
+    if in_journey?
+      current_journey.exit_station = station
+    else
+      @journeys << Journey.new.exit_station = exit_station
+    end
+    deduct(current_journey.fare)
   end
 
   def in_journey?
-    @in_use
+    return false if @journeys.is_empty?
+    @journeys.last.incomplete?
   end
+
+  def current_journey
+    @journeys.last
+  end
+
+
+
 
   private
 
