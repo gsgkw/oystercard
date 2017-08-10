@@ -4,7 +4,7 @@ class Oystercard
 
   $MAXV = 90
 
-  def initialize(balance = 0)
+  def initialize(balance = 1)
     @balance = balance
     @journeys = []
   end
@@ -14,32 +14,29 @@ class Oystercard
     @balance += value
   end
 
-  def touch_in(entry_station)
+  def touch_in(args)
     raise 'Bal lower than #{MINV}' if balance < $MINV
     deduct(current_journey.fare) if in_journey?
-    @journeys << Journey.new(entry_station)
+    @journeys << Journey.new(args)
   end
 
-  def touch_out(station)
+  def touch_out(args)
     if in_journey?
-      current_journey.exit_station = station
+      current_journey.exit_station = args[:exit_station]
     else
-      @journeys << Journey.new.exit_station = exit_station
+      @journeys << Journey.new(args)
     end
     deduct(current_journey.fare)
   end
 
   def in_journey?
-    return false if @journeys.is_empty?
-    @journeys.last.incomplete?
+    return false if @journeys.empty?
+    current_journey.incomplete?
   end
 
   def current_journey
     @journeys.last
   end
-
-
-
 
   private
 
